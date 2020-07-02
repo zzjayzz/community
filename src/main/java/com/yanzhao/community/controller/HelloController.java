@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package com.yanzhao.community.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
