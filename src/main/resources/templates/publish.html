@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Publish</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <link rel="stylesheet" href ="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href ="css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href ="css/community.css"/>
+
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/bootstrap.min.js" type="application/javascript"></script>
+
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Yanzhao Community</span>
+
+            </button>
+            <a class="navbar-brand" href="#">Yanzhao Community</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <form class="navbar-form navbar-left">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search Question">
+                </div>
+                <button type="submit" class="btn btn-default">Search</button>
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+                <li th:if="${session.user !=null}">
+                    <a herf="/publish">Publish</a>
+                </li>
+                <li class="dropdown" th:if="${session.user !=null}">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false" th:text="${session.user.getName()}"> <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Message</a></li>
+                        <li><a href="#">Profile</a></li>
+                        <li><a href="#">Logout</a></li>
+                    </ul>
+                <li th:if="${session.user == null}">
+                <a href="https://github.com/login/oauth/authorize?client_id=07a6bb3a5954d9238b6c&redirect_uri=http://localhost:8887/callback&scope=user&state=1">login</a></li>
+
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+    <div class="container-fluid main">
+        <div class="row">
+            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12" >
+                <h2><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Publish</h2>
+                <hr>
+
+                <form action="/publish" method="post">
+                    <div class="form-group">
+                        <label for="title">Question Title(Be specific):</label>
+                        <input type="text" th:value="${title}" class="form-control" id="title" name="title" placeholder="Question Title__">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Body(Include all the information someone would need to answer your question):</label>
+                        <textarea name="description" id="description" th:text="${description}" class="form-control" col="30" rows="10"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="title">Add Tag</label>
+                        <input type="tag" class="form-control" th:value="${tag}" id="tag" name="tag" placeholder="Add tag,seperate by comma">
+                    </div>
+
+                    <span class="alert alert-danger" th:text="${error}" th:if="${error !=null}"></span>
+                    <button type="submit" class="btn btn-success btn-publish ">Publish</button>
+
+                </form>
+            </div>
+            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                <h3>Publish Instruction</h3>
+                · Include details about your goal<br/>
+                · Describe expected and actual results<br/>
+                · Include any error messages<br/>
+                · When appropriate, share the minimum amount of code others need to reproduce your problem<br/>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

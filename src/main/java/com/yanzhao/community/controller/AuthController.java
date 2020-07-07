@@ -22,6 +22,7 @@ public class AuthController {
     private GithubProvider githubProvider;
     @Autowired
     private UserMapper userMapper;
+
     @Value("${github.client.id}")
     private String clientId;
 
@@ -45,7 +46,7 @@ public class AuthController {
             accessTokenDTO.setState(state);
             String accessToken= githubProvider.getAccessToken(accessTokenDTO);
             GithubUser githubUser= githubProvider.getuser(accessToken);
-            if (githubUser!=null)
+            if (githubUser!=null && githubUser.getId()!= null)
             { //login success
                 User user=new User();
                 String token=UUID.randomUUID().toString();
@@ -54,6 +55,7 @@ public class AuthController {
                 user.setAccount_id(String.valueOf(githubUser.getId()));
                 user.setGmt_create(System.currentTimeMillis());
                 user.setGmt_modified(user.getGmt_create());
+                user.setAvatar_url(githubUser.getAvatar_url());
                 userMapper.insert(user);
                 response.addCookie(new Cookie("token",token));
 
