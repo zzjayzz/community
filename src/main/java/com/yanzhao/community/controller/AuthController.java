@@ -1,10 +1,11 @@
 package com.yanzhao.community.controller;
 
-import com.yanzhao.community.Mapper.UserMapper;
+import com.yanzhao.community.mapper.UserMapper;
 import com.yanzhao.community.dto.AccessTokenDTO;
 import com.yanzhao.community.dto.GithubUser;
 import com.yanzhao.community.model.User;
 import com.yanzhao.community.provider.GithubProvider;
+import com.yanzhao.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,9 @@ public class AuthController {
     private GithubProvider githubProvider;
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    UserService userService;
 
     @Value("${github.client.id}")
     private String clientId;
@@ -53,20 +57,29 @@ public class AuthController {
                 user.setToken(token);
                 user.setName(githubUser.getName());
                 user.setAccount_id(String.valueOf(githubUser.getId()));
-                user.setGmt_create(System.currentTimeMillis());
-                user.setGmt_modified(user.getGmt_create());
                 user.setAvatar_url(githubUser.getAvatar_url());
-                userMapper.insert(user);
+                userService.createOrupdate(user);
+
                 response.addCookie(new Cookie("token",token));
 
 //                request.getSession().setAttribute("user",githubUser);//if not assign cookies, will automatically give you
                 return "redirect:/";
-
-
             }else {
                 //login fail
                 return "redirect:/";
             }
+        }
+
+        @GetMapping("/logout")
+        public String logout(
+                HttpServletRequest request,
+                HttpServletResponse response
+        ){
+        request.getSession().removeAttribute("user");
+        Cookie cookie = new Cookie("token",null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return "redirect:/";
         }
     }
 

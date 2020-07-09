@@ -18,3 +18,7 @@
 
 [git_Oauth](https://developer.github.com/apps/building-oauth-apps/)
 
+
+
+bash:
+mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate
