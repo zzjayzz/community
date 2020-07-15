@@ -1,5 +1,8 @@
 package com.yanzhao.community.service;
 
+import com.yanzhao.community.exception.CustomizeErrorCode;
+import com.yanzhao.community.exception.CustomizeException;
+import com.yanzhao.community.mapper.QuestionExtMapper;
 import com.yanzhao.community.mapper.QuestionMapper;
 import com.yanzhao.community.mapper.UserMapper;
 import com.yanzhao.community.dto.PageDTO;
@@ -22,6 +25,8 @@ public class QuestionService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private QuestionExtMapper questionExtMapper;
     @Autowired
     private QuestionMapper questionMapper;
 
@@ -60,7 +65,7 @@ public class QuestionService {
         return  pageDTO;
     }
 
-    public PageDTO list(Integer userId, Integer page, Integer size) {
+    public PageDTO list(Long userId, Integer page, Integer size) {
         PageDTO pageDTO = new PageDTO();
         Integer totalPage;
         QuestionExample questionExample = new QuestionExample();
@@ -99,8 +104,11 @@ public class QuestionService {
         return pageDTO;
     }
 
-    public QuestionDTO getById(Integer id) {
+    public QuestionDTO getById(Long id) {
         Question question=questionMapper.selectByPrimaryKey(id);
+        if (question==null){
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+        }
         QuestionDTO questionDTO=new QuestionDTO();
         BeanUtils.copyProperties(question, questionDTO);
         User user = userMapper.selectByPrimaryKey(question.getCreator());
@@ -113,6 +121,9 @@ public class QuestionService {
         if (question.getId() ==null){
             question.setGmt_create(System.currentTimeMillis());
             question.setGmt_modified(question.getGmt_modified());
+            question.setView_count(0);
+            question.setComment_count(0);
+            question.setLike_count(0);
             questionMapper.insert(question);
         }else{
             //update
@@ -123,7 +134,17 @@ public class QuestionService {
             updateQuestion.setTag(question.getTag());
             QuestionExample example = new QuestionExample();
             example.createCriteria().andIdEqualTo(question.getId());
-            questionMapper.updateByExampleSelective(updateQuestion, example);
+            int updated=questionMapper.updateByExampleSelective(updateQuestion, example);
+            if (updated !=1){
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
         }
+    }
+
+    public void incView(Long id) {
+        Question record = new Question();
+        record.setId(id);
+        record.setView_count(1);
+        questionExtMapper.incView(record);
     }
 }

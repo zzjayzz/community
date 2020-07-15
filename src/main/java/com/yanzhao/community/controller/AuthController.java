@@ -21,6 +21,7 @@ import java.util.UUID;
 public class AuthController {
     @Autowired
     private GithubProvider githubProvider;
+
     @Autowired
     private UserMapper userMapper;
 
