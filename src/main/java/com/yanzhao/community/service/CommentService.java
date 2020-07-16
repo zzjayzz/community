@@ -29,8 +29,8 @@ public class CommentService {
     @Autowired
     private QuestionExtMapper questionExtMapper;
 
-//    @Autowired
-//    CommentExtMapper commentExtMapper;
+    @Autowired
+    CommentExtMapper commentExtMapper;
 
 
     @Autowired
@@ -54,12 +54,12 @@ public class CommentService {
                 throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT_FOUND);
             }
             commentMapper.insert(comment);
-//
-//            // increase comment
-//            Comment parentComment = new Comment();
-//            parentComment.setId(comment.getParent_id());
-//            parentComment.setComment_count(1);
-//            commentExtMapper.incCommentCount(parentComment);
+
+            // increase comment
+            Comment parentComment = new Comment();
+            parentComment.setId(comment.getParent_id());
+            parentComment.setComment_count(1);
+            commentExtMapper.incCommentCount(parentComment);
         }else
         {
             //response comment

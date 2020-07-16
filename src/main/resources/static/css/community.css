@@ -65,6 +65,8 @@ body {
 
 .question-tag {
     margin-right: 5px;
+    font-size:14px;
+
 }
 
 .question-related {
@@ -89,6 +91,7 @@ body {
     white-space: normal;
     margin: 5px 5px;
     display: inline-block;
+    font-size: 14px;
 }
 
 .community-menu {
